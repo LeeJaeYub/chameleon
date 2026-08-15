@@ -570,7 +570,6 @@ button:focus-visible,
 
 /* 짝맞추기 */
 .match { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
-.match-col { display: flex; flex-direction: column; gap: 9px; }
 .match-item {
   position: relative;
   min-height: 62px; text-align: left; padding: 12px;

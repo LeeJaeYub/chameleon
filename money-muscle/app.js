@@ -781,29 +781,31 @@
     body.appendChild(el('h2', 'q-text', s.q || '짝을 맞춰 보세요'));
 
     var grid = el('div', 'match');
-    var colL = el('div', 'match-col'), colR = el('div', 'match-col');
-    grid.appendChild(colL); grid.appendChild(colR);
     body.appendChild(grid);
 
     var left = shuffle(s.pairs.map(function (p, i) { return { t: p[0], id: i }; }));
     var right = shuffle(s.pairs.map(function (p, i) { return { t: p[1], id: i }; }));
     var selL = null, selR = null, solved = 0, missed = false;
 
-    function build(items, col) {
-      items.forEach(function (it) {
+    // 왼쪽·오른쪽을 한 줄씩 번갈아 넣어요 — 그리드 한 행에 두 칸이 같이 들어가면
+    // 브라우저가 그 행의 높이를 둘 중 더 큰 쪽에 맞춰줘서, 글자가 길어 줄바꿈된 칸 옆도
+    // 빈 공간 없이 나란히 맞춰집니다 (왼쪽 칸만 따로 쌓으면 이게 안 맞아요).
+    function build(items, side) {
+      return items.map(function (it) {
         var b = el('button', 'match-item', it.t);
         b.dataset.id = it.id;
+        b.dataset.side = side;
         b.addEventListener('click', function () {
           if (b.classList.contains('is-done') || sess.graded) return;
           sfx.tap();
-          var isLeft = col === colL;
+          var isLeft = side === 'l';
           var prev = isLeft ? selL : selR;
           if (prev) prev.classList.remove('is-sel');
           b.classList.add('is-sel');
           if (isLeft) selL = b; else selR = b;
           if (selL && selR) resolve();
         });
-        col.appendChild(b);
+        return b;
       });
     }
 
@@ -825,8 +827,9 @@
       }
     }
 
-    build(left, colL);
-    build(right, colR);
+    var lBtns = build(left, 'l');
+    var rBtns = build(right, 'r');
+    for (var i = 0; i < lBtns.length; i++) { grid.appendChild(lBtns[i]); grid.appendChild(rBtns[i]); }
     armCta('확인', false, function () {});
   }
 
