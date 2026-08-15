@@ -631,6 +631,27 @@ button:focus-visible,
 .fb-answer-label { font-weight: 700; font-size: 14px; color: #c94040; }
 .fb-answer { font-family: var(--display); font-size: 24px; color: var(--ember-deep); margin-top: 4px; }
 
+/* 세로 공간이 좁은 화면 — 데스크톱은 창이 넉넉히 길어서 안 걸리지만,
+   폰은 앱 너비는 비슷해도 세로 높이가 짧아서 문제 화면 안에서 스크롤이 생겨요.
+   그래서 너비가 아니라 높이 기준으로 여백·글자 크기를 줄입니다. */
+@media (max-height: 740px) {
+  .lesson-top { padding: 4px 18px 10px; }
+  .phase { padding: 12px 18px 0; }
+  .lesson-body { padding: 0 20px 14px; gap: 12px; }
+  .concept-title { font-size: 23px; line-height: 1.4; }
+  .concept-card { padding: 15px; gap: 9px; }
+  .concept-text { font-size: 16px; line-height: 1.6; }
+  .q-text { font-size: 21px; line-height: 1.4; }
+  .opts { gap: 8px; }
+  .opt { padding: 13px; font-size: 15px; }
+  .opt.is-quiz { font-size: 18px; }
+  .opts.is-ox .opt { padding: 16px; font-size: 22px; }
+  .hint { padding: 12px; }
+  .hint-text { font-size: 19px; }
+  .match-item { min-height: 50px; padding: 10px; font-size: 13px; }
+  .lesson-foot, .foot { padding: 12px 18px 16px; }
+}
+
 /* ============================================================
    완료 · 가입
    ============================================================ */
