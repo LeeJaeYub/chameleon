@@ -25,38 +25,38 @@
     <div class="ob-body">
       <div class="sticker-row">
         <div class="sticker is-idle" style="width:88px;height:88px;border-radius:24px" data-leon="idle"></div>
-        <p class="bubble">반가워요. 몇 가지만 물어볼게요.</p>
+        <p class="bubble" data-t="why.bubble"></p>
       </div>
-      <h1 class="ob-q">왜 돈 공부를<br>시작하시나요?</h1>
+      <h1 class="ob-q" data-t="why.q"></h1>
       <div class="opts" id="why-opts"></div>
       <div style="height:8px"></div>
     </div>
     <div class="foot">
-      <button class="btn btn-primary" id="why-next" disabled>계속하기</button>
+      <button class="btn btn-primary" id="why-next" data-t="cta.continue" disabled></button>
     </div>
   </section>
 
   <!-- ══ 01 온보딩 · 일일 목표 ══ -->
   <section class="screen" id="s-goal" hidden>
     <div class="ob-top">
-      <button class="ob-back" id="goal-back" aria-label="이전으로">&lsaquo;</button>
+      <button class="ob-back" id="goal-back" data-t-aria="goal.back">&lsaquo;</button>
       <div class="ob-track"><div class="ob-fill" style="width:66%"></div></div>
     </div>
     <div class="ob-body">
       <div class="sticker-row">
         <div class="sticker is-idle" style="width:88px;height:88px;border-radius:24px;animation-delay:.4s" data-leon="idle"></div>
-        <p class="bubble">작게 잡아도 괜찮아요.</p>
+        <p class="bubble" data-t="goal.bubble"></p>
       </div>
-      <h1 class="ob-q">하루 목표를<br>정해볼까요?</h1>
+      <h1 class="ob-q" data-t="goal.q"></h1>
       <div class="opts" id="goal-opts"></div>
       <div class="forecast">
-        <span class="forecast-chip">예상 기간</span>
-        <p class="forecast-text" id="goal-forecast">목표를 고르면 언제 끝나는지 알려드릴게요.</p>
+        <span class="forecast-chip" data-t="goal.chip"></span>
+        <p class="forecast-text" id="goal-forecast" data-t="goal.hint"></p>
       </div>
       <div style="height:8px"></div>
     </div>
     <div class="foot">
-      <button class="btn btn-primary" id="goal-next" disabled>계속하기</button>
+      <button class="btn btn-primary" id="goal-next" data-t="cta.continue" disabled></button>
     </div>
   </section>
 
@@ -68,9 +68,9 @@
         <span class="orbit-coin" style="width:18px;height:18px;background:#dff7ee;animation-delay:1.7s"></span>
         <div class="sticker is-build" style="width:142px;height:142px;border-radius:34px;border-width:6px" data-leon="idle"></div>
       </div>
-      <p class="build-title">코스 만드는 중</p>
+      <p class="build-title" data-t="build.title"></p>
       <div class="build-track"><div class="build-fill"></div></div>
-      <p class="build-note">레벨 1 · 돈의 기초 8유닛</p>
+      <p class="build-note" id="build-note"></p>
     </div>
   </section>
 
@@ -78,8 +78,9 @@
   <section class="screen" id="s-home" hidden>
     <button class="level-head" id="home-level-tab">
       <span class="level-head-main">
-        <span class="level-tag" id="home-level-tag">레벨 01 · 저축가</span>
-        <span class="level-name" id="home-level-name">돈이란 무엇인가</span>
+        <!-- 첫 그림은 syncHeader()가 채웁니다 — 미리 적어두면 다른 언어판에서 한글이 깜빡여요 -->
+        <span class="level-tag" id="home-level-tag"></span>
+        <span class="level-name" id="home-level-name"></span>
       </span>
       <span class="level-count" id="home-count">0 / 8</span>
       <span class="level-more" aria-hidden="true">&rsaquo;</span>
@@ -97,15 +98,15 @@
   <!-- ══ 03 투자 · 모의 포트폴리오 ══ -->
   <section class="screen" id="s-invest" hidden>
     <div class="inv-top">
-      <div class="inv-label">총자산</div>
+      <div class="inv-label" data-t="invest.label"></div>
       <div class="inv-total" id="inv-total">$0</div>
     </div>
     <div class="inv-body">
       <div class="sticker-row">
         <div class="sticker is-idle" style="width:76px;height:76px;border-radius:22px" data-leon="idle"></div>
-        <p class="bubble">문제를 풀면 여기에 돈이 쌓여요.</p>
+        <p class="bubble" data-t="invest.bubble"></p>
       </div>
-      <p class="inv-note">이 돈으로 종목을 사고파는 건 아직 만드는 중이에요.</p>
+      <p class="inv-note" data-t="invest.note"></p>
     </div>
   </section>
 
@@ -113,10 +114,10 @@
   <section class="screen" id="s-curriculum" hidden>
     <div class="cur-top">
       <div>
-        <div class="cur-title">커리큘럼</div>
-        <div class="cur-sub">금융 문맹 탈출까지 9레벨</div>
+        <div class="cur-title" data-t="cur.title"></div>
+        <div class="cur-sub" id="cur-sub"></div>
       </div>
-      <button class="cur-close" id="cur-close" aria-label="닫기"><span></span><span></span></button>
+      <button class="cur-close" id="cur-close" data-t-aria="cur.close"><span></span><span></span></button>
     </div>
     <div class="cur-body" id="cur-body"></div>
   </section>
@@ -128,14 +129,14 @@
       <span class="combo" id="combo"></span>
     </div>
     <div class="lesson-top">
-      <button class="lesson-close" id="lesson-close" aria-label="레슨 나가기">
+      <button class="lesson-close" id="lesson-close" data-t-aria="lesson.close">
         <svg viewBox="0 0 24 24" fill="none"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <div class="bar" id="bar"></div>
     </div>
     <div class="lesson-body" id="lesson-body"></div>
     <div class="lesson-foot" id="lesson-foot">
-      <button class="btn btn-primary" id="lesson-cta" disabled>확인</button>
+      <button class="btn btn-primary" id="lesson-cta" data-t="cta.check" disabled></button>
     </div>
   </section>
 
@@ -150,21 +151,21 @@
       </div>
       <div class="done-head">
         <div class="done-label" id="done-label" hidden></div>
-        <h1 class="done-title" id="done-title">유닛 완료!</h1>
+        <h1 class="done-title" id="done-title" data-t="done.title"></h1>
       </div>
       <div class="score-row">
         <div class="score on-xp">
-          <div class="score-head" id="done-xp-head">획득 XP</div>
+          <div class="score-head" id="done-xp-head" data-t="done.xpHead"></div>
           <div class="score-value" id="done-xp">0</div>
         </div>
         <div class="score on-acc">
-          <div class="score-head" id="done-acc-head">잘했어요</div>
+          <div class="score-head" id="done-acc-head" data-t="done.accHead"></div>
           <div class="score-value" id="done-acc">0%</div>
         </div>
       </div>
     </div>
     <div class="foot">
-      <button class="btn btn-primary" id="done-next">계속하기</button>
+      <button class="btn btn-primary" id="done-next" data-t="cta.continue"></button>
     </div>
   </section>
 
@@ -174,22 +175,22 @@
   <section class="screen" id="s-signup" hidden>
     <div class="center-screen" style="gap:26px">
       <div class="sticker is-idle" style="width:124px;height:124px;border-radius:32px;border-width:6px" data-leon="idle"></div>
-      <h1 class="done-title" style="font-size:28px">여기까지 온 기록,<br>저장해둘까요?</h1>
+      <h1 class="done-title" style="font-size:28px" data-t="signup.title"></h1>
       <div class="recap">
         <div class="recap-row">
-          <span class="recap-label">완료한 유닛</span>
-          <span class="recap-value" id="recap-units">0개</span>
+          <span class="recap-label" data-t="signup.units"></span>
+          <span class="recap-value" id="recap-units"></span>
         </div>
         <div class="rule"></div>
         <div class="recap-row">
-          <span class="recap-label">모은 돈</span>
+          <span class="recap-label" data-t="signup.money"></span>
           <span class="recap-value" id="recap-xp">0</span>
         </div>
       </div>
     </div>
     <div class="signup-foot">
-      <button class="btn btn-cobalt" id="signup-yes">프로필 만들기</button>
-      <button class="btn btn-ghost" id="signup-later">나중에 하기</button>
+      <button class="btn btn-cobalt" id="signup-yes" data-t="signup.yes"></button>
+      <button class="btn btn-ghost" id="signup-later" data-t="signup.later"></button>
     </div>
   </section>
 
@@ -197,16 +198,24 @@
   <nav class="tabbar" id="tabbar" hidden>
     <button class="tab is-active" data-goes="s-home">
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 19V9.5L12 4l8 5.5V19a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
-      <span class="tab-label">학습</span>
+      <span class="tab-label" data-t="tab.learn"></span>
     </button>
     <button class="tab" data-goes="s-invest">
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 19h16M5 15l4-5 4 3 6-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span class="tab-label">투자</span>
+      <span class="tab-label" data-t="tab.invest"></span>
+    </button>
+    <!-- 언어 — 화면을 옮기는 탭이 아니라 목록을 여는 버튼이라, 선 하나로 갈라둡니다.
+         고를 언어가 하나뿐이면 i18n.js가 이 버튼을 켜지 않습니다. -->
+    <button class="tab tab-lang" id="tab-lang" data-t-aria="lang.pick" hidden>
+      <span class="flag"></span>
+      <span class="tab-label"></span>
     </button>
   </nav>
 
 </main>
 
+<script src="i18n.js"></script>
+<script src="ui.js"></script>
 <script src="content.js"></script>
 <script src="app.js"></script>
 </body>

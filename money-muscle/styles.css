@@ -351,6 +351,47 @@ button:focus-visible,
 .tab-label { font-weight: 700; font-size: 12px; }
 .tab.is-active { color: var(--sprout); }
 
+/* 언어 — 화면을 옮기는 탭이 아니라 목록을 여는 버튼이라
+   폭을 고정하고 세로선 하나로 갈라둡니다. 국기만 봐도 무슨 버튼인지 알아요. */
+.tab-lang {
+  flex: none; width: 62px; gap: 5px;
+  border-left: 2px solid var(--line-soft); border-radius: 0 var(--radius) var(--radius) 0;
+}
+.tab-lang[hidden] { display: none; }
+.tab-lang .tab-label { letter-spacing: .06em; }
+.tab-lang:active { color: var(--ink); }
+
+.flag {
+  display: block; width: 26px; height: 18px; border-radius: 3px; overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .16);
+}
+.flag svg { width: 100%; height: 100%; display: block; }
+
+/* 언어 목록 — 앱 폭 안에서 아래에서 올라옵니다 */
+.lang-sheet { position: absolute; inset: 0; z-index: 60; display: flex; align-items: flex-end; }
+.lang-sheet[hidden] { display: none; }
+.lang-scrim { position: absolute; inset: 0; background: rgba(20, 18, 14, .38); }
+.lang-panel {
+  position: relative; width: 100%;
+  background: var(--card); border-top: 2px solid var(--line);
+  border-radius: 22px 22px 0 0; padding: 18px 18px 24px;
+  animation: langRise .22s ease-out;
+}
+@keyframes langRise { from { transform: translateY(14px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .lang-panel { animation: none; } }
+.lang-head { display: flex; align-items: center; justify-content: space-between; padding-bottom: 12px; }
+.lang-title { font-family: var(--display); font-size: 20px; }
+.lang-list { display: flex; flex-direction: column; }
+.lang-row {
+  display: flex; align-items: center; gap: 13px;
+  padding: 13px 6px; border-radius: var(--radius); text-align: left;
+}
+.lang-row + .lang-row { border-top: 2px solid var(--line-soft); }
+.lang-row .flag { width: 32px; height: 22px; }
+.lang-name { flex: 1; font-weight: 700; font-size: 15px; }
+.lang-mark { flex: none; font-size: 15px; color: var(--sprout); }
+.lang-row.is-on .lang-name { color: var(--sprout-ink); }
+
 /* 투자 — 아직 껍데기입니다 */
 .inv-top { flex: none; padding: 26px 20px 18px; }
 .inv-label { font-weight: 700; font-size: 13px; color: var(--slate); }

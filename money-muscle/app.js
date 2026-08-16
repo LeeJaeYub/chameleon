@@ -178,7 +178,8 @@
     var onTab = TAB_SCREENS.indexOf(id) !== -1;
     $('tabbar').hidden = !onTab;
     if (onTab) {
-      $('tabbar').querySelectorAll('.tab').forEach(function (t) {
+      // 언어 버튼은 화면을 옮기지 않으므로 data-goes가 있는 탭만 봅니다
+      $('tabbar').querySelectorAll('.tab[data-goes]').forEach(function (t) {
         t.classList.toggle('is-active', t.dataset.goes === id);
       });
     }
@@ -187,14 +188,15 @@
     if (id === 's-invest') renderInvest();
   }
 
-  // 보상은 전부 달러 정수라 소수점은 쓰지 않습니다
+  // 게임 안에서 모으는 돈은 어느 언어판이든 달러입니다 — 나라마다 통화를 바꾸지 않아요.
+  // 보상은 전부 정수라 소수점은 쓰지 않습니다.
   function money(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
 
   function renderInvest() {
     $('inv-total').textContent = money(state.cash);
   }
 
-  $('tabbar').querySelectorAll('.tab').forEach(function (t) {
+  $('tabbar').querySelectorAll('.tab[data-goes]').forEach(function (t) {
     t.addEventListener('click', function () {
       if (t.classList.contains('is-active')) return;
       sfx.tap();
@@ -233,8 +235,8 @@
       b.classList.add('is-sel');
       state.goal = g.key;
       $('goal-forecast').innerHTML =
-        '레벨 1은 <strong>' + Math.ceil(LEVEL1_UNITS / g.units) + '일</strong> 안에 끝나요.' +
-        '<span class="forecast-sub">' + Math.ceil(TOTAL_UNITS / g.units) + '일 뒤에는 금융 문맹 탈출이에요.</span>';
+        t('goal.forecast', { d: Math.ceil(LEVEL1_UNITS / g.units) }) +
+        '<span class="forecast-sub">' + t('goal.forecastSub', { d: Math.ceil(TOTAL_UNITS / g.units) }) + '</span>';
       $('goal-next').disabled = false;
     });
     goalOpts.appendChild(b);
@@ -309,18 +311,18 @@
     var i = lessonOf(li, ui);
     if (i !== undefined) { startLesson(i); return; }
     sfx.tap();
-    toast('레벨 ' + (li + 1) + ' · ' + CURRICULUM[li].units[ui] + ' — 콘텐츠 준비 중이에요');
+    toast(t('toast.unitSoon', { n: li + 1, name: CURRICULUM[li].units[ui] }));
   }
   function openCp(li) {
     if (!doneCp(li) && !unitsDone(li)) {
       sfx.tap();
-      toast('레벨 ' + (li + 1) + ' 유닛을 모두 끝내야 체크포인트를 볼 수 있어요');
+      toast(t('toast.cpLocked', { n: li + 1 }));
       return;
     }
     var i = cpOf(li);
     if (i !== undefined) { startLesson(i); return; }
     sfx.tap();
-    toast('레벨 ' + (li + 1) + ' 체크포인트 — 콘텐츠 준비 중이에요');
+    toast(t('toast.cpSoon', { n: li + 1 }));
   }
 
   function renderHome() {
@@ -335,7 +337,7 @@
       band.setAttribute('data-lv', lv.n);
       band.style.setProperty('--lv', lvColor(lv.n));
       band.innerHTML =
-        '<div class="lv-line"><span></span><b>레벨 ' + pad(lv.n) + ' · ' + lv.name + '</b><span></span></div>' +
+        '<div class="lv-line"><span></span><b>' + t('level.tag', { n: pad(lv.n), name: lv.name }) + '</b><span></span></div>' +
         '<div class="lv-card">' +
           '<div class="lv-title">' + lv.ko + '</div>' +
           '<div class="lv-meta">' + lv.en + '</div>' +
@@ -383,7 +385,7 @@
     else if (ui === 0) {
       btn.className = 'node is-entry';
       btn.innerHTML = ICON_SKIP;
-      btn.setAttribute('aria-label', name + ' — 이 레벨로 바로 시작');
+      btn.setAttribute('aria-label', t('node.entryAria', { name: name }));
     }
     else { btn.textContent = pad(ui + 1); }
     btn.addEventListener('click', function () { openUnit(li, ui); });
@@ -403,7 +405,7 @@
     var btn = document.createElement('button');
     btn.className = 'node node-current-btn';
     btn.innerHTML = ICON_PLAY;
-    btn.setAttribute('aria-label', name + ' 시작');
+    btn.setAttribute('aria-label', t('node.startAria', { name: name }));
     btn.addEventListener('click', function () { openUnit(li, ui); });
     var label = document.createElement('span');
     label.className = 'node-label';
@@ -419,9 +421,9 @@
     b.className = 'checkpoint-card' + (isNext ? ' is-next' : '') + (locked ? ' is-locked' : '');
     b.id = 'cp-' + li;
     b.style.setProperty('--lv', lvColor(lv.n));
-    var label = doneCp(li) ? '완료' : locked ? '잠김' : '테스트';
+    var label = doneCp(li) ? t('cp.done') : locked ? t('cp.locked') : t('cp.test');
     b.innerHTML =
-      '<span class="cp-name">레벨 ' + lv.n + ' 체크포인트</span>' +
+      '<span class="cp-name">' + t('cp.name', { n: lv.n }) + '</span>' +
       '<span class="cp-state">' + label + '</span>';
     b.addEventListener('click', function () { openCp(li); });
     return b;
@@ -444,13 +446,13 @@
 
     var wrap = el('div', 'goal-stone' + (full ? ' is-full' : ''));
     wrap.innerHTML =
-      '<div class="lv-line"><span></span><b>마지막</b><span></span></div>' +
+      '<div class="lv-line"><span></span><b>' + t('goalStone.band') + '</b><span></span></div>' +
       '<svg viewBox="0 0 140 210" aria-hidden="true">' + bars +
         '<rect x="0" y="192" width="140" height="18" rx="5" fill="' +
         (full ? 'var(--ink)' : 'var(--line)') + '"/></svg>' +
-      '<div class="goal-stone-title">금융 문맹 탈출</div>' +
+      '<div class="goal-stone-title">' + t('goalStone.title') + '</div>' +
       '<p class="goal-stone-sub">' +
-        (full ? '9레벨을 모두 끝냈어요.' : '레벨을 졸업할 때마다 한 칸씩 칠해져요.') +
+        (full ? t('goalStone.subFull', { n: CURRICULUM.length }) : t('goalStone.sub')) +
       '</p>';
     return wrap;
   }
@@ -500,9 +502,11 @@
       var goalColor = full ? 'var(--coin-deep)' : 'var(--slate)';
       tab.style.setProperty('--lv', goalColor);
       rail.style.setProperty('--lv', goalColor);
-      $('home-level-tag').textContent = '금융 문맹 탈출';
-      $('home-level-name').textContent = full ? '9레벨 전체 완주' : '마지막 목적지';
-      $('home-count').textContent = doneN + ' / ' + CURRICULUM.length + ' 레벨';
+      $('home-level-tag').textContent = t('goalStone.title');
+      $('home-level-name').textContent = full
+        ? t('head.goalFull', { n: CURRICULUM.length })
+        : t('head.goalName');
+      $('home-count').textContent = t('head.levelCount', { d: doneN, t: CURRICULUM.length });
       return;
     }
 
@@ -510,7 +514,7 @@
     var lv = CURRICULUM[n - 1];
     tab.style.setProperty('--lv', lvColor(n));
     rail.style.setProperty('--lv', lvColor(n));
-    $('home-level-tag').textContent = '레벨 ' + pad(n) + ' · ' + lv.name;
+    $('home-level-tag').textContent = t('level.tag', { n: pad(n), name: lv.name });
     $('home-level-name').textContent = lv.ko;
     var d = 0;
     for (var u = 0; u < lv.units.length; u++) if (doneAt(n - 1, u)) d++;
@@ -561,7 +565,7 @@
           '<span class="cur-lv-meta">' + lv.name + ' · ' + lv.en + '</span></span></div>' +
         '<p class="cur-lv-desc">' + lv.desc + '</p>' +
         '<div class="cur-rows">' + rows + '</div>' +
-        '<div class="cur-cp' + (doneCp(li) ? ' is-done' : '') + '">레벨 ' + lv.n + ' <span class="cur-cp-name">' + lv.name + '</span> 체크포인트</div>';
+        '<div class="cur-cp' + (doneCp(li) ? ' is-done' : '') + '">' + t('cur.cp', { n: lv.n, name: lv.name }) + '</div>';
       body.appendChild(sec);
     });
 
@@ -640,20 +644,21 @@
 
     // 구간 라벨
     var left = $('phase-left');
-    var t = sess.total, p = sess.passed;
+    var total = sess.total, p = sess.passed;
     var cur = sess.queue[sess.pos];
     var parts = [
-      '<span class="phase-tag on-concept' + (cur && cur.kind !== 'concept' ? ' is-past' : '') + '">개념 ' + p.concept + '/' + t.concept + '</span>',
+      '<span class="phase-tag on-concept' + (cur && cur.kind !== 'concept' ? ' is-past' : '') + '">' +
+        t('phase.concept', { p: p.concept, t: total.concept }) + '</span>',
       '<span class="phase-sep">·</span>',
-      '<span class="phase-tag on-quiz">문제 ' + p.quiz + '/' + t.quiz + '</span>'
+      '<span class="phase-tag on-quiz">' + t('phase.quiz', { p: p.quiz, t: total.quiz }) + '</span>'
     ];
-    if (t.retry > 0) {
+    if (total.retry > 0) {
       parts.push('<span class="phase-sep">·</span>');
-      parts.push('<span class="phase-tag on-retry">다시 풀기 ' + (t.retry - p.retry) + '</span>');
+      parts.push('<span class="phase-tag on-retry">' + t('phase.retry', { n: total.retry - p.retry }) + '</span>');
     }
     left.innerHTML = parts.join('');
 
-    $('combo').textContent = sess.combo >= 2 ? sess.combo + '번 연속 정답' : '';
+    $('combo').textContent = sess.combo >= 2 ? t('combo', { n: sess.combo }) : '';
   }
 
   function armCta(label, enabled, handler) {
@@ -684,9 +689,9 @@
     body.innerHTML = '';
 
     if (entry.kind === 'retry') {
-      body.appendChild(el('span', 'pill on-retry', '다시 한번 풀어볼까요?'));
+      body.appendChild(el('span', 'pill on-retry', t('pill.retry')));
     } else if (entry.kind === 'concept' && !sess.lesson.checkpoint) {
-      body.appendChild(el('span', 'pill on-concept', '새로운 개념'));
+      body.appendChild(el('span', 'pill on-concept', t('pill.concept')));
     }
 
     var s = entry.step;
@@ -735,7 +740,7 @@
       body.appendChild(row);
     }
 
-    armCta('계속하기', true, advance);
+    armCta(t('cta.continue'), true, advance);
   }
 
   // ---- 객관식 / O·X ----
@@ -743,7 +748,7 @@
     body.appendChild(el('h2', 'q-text', s.q));
     if (s.hint) {
       var h = el('div', 'hint');
-      h.appendChild(el('span', 'hint-label', '힌트'));
+      h.appendChild(el('span', 'hint-label', t('hint.label')));
       h.appendChild(el('p', 'hint-text', s.hint));
       body.appendChild(h);
     }
@@ -769,7 +774,7 @@
     });
     body.appendChild(box);
 
-    armCta('확인', false, function () {
+    armCta(t('cta.check'), false, function () {
       if (!chosen) return;
       box.querySelectorAll('.opt').forEach(function (x, i) {
         x.disabled = true;
@@ -789,7 +794,7 @@
 
   // ---- 짝맞추기 ----
   function renderMatch(s, body) {
-    body.appendChild(el('h2', 'q-text', s.q || '짝을 맞춰 보세요'));
+    body.appendChild(el('h2', 'q-text', s.q || t('match.q')));
 
     var grid = el('div', 'match');
     body.appendChild(grid);
@@ -843,7 +848,7 @@
     var lBtns = build(left, 'l');
     var rBtns = build(right, 'r');
     for (var i = 0; i < lBtns.length; i++) { grid.appendChild(lBtns[i]); grid.appendChild(rBtns[i]); }
-    armCta('확인', false, function () {});
+    armCta(t('cta.check'), false, function () {});
   }
 
   // ---- 빈칸 채우기 ----
@@ -876,7 +881,7 @@
     });
     body.appendChild(chips);
 
-    armCta('확인', false, function () {
+    armCta(t('cta.check'), false, function () {
       if (!chosen) return;
       chips.querySelectorAll('.chip').forEach(function (x) { x.disabled = true; });
       chosen.node.classList.remove('is-sel');
@@ -894,7 +899,7 @@
     var slots = el('div', 'slots');
     s.items.forEach(function (_, i) {
       var sl = el('div', 'slot');
-      sl.innerHTML = '<span class="slot-n">' + (i + 1) + '</span><span class="slot-text">여기에 놓기</span>';
+      sl.innerHTML = '<span class="slot-n">' + (i + 1) + '</span><span class="slot-text">' + t('order.slot') + '</span>';
       slots.appendChild(sl);
     });
     body.appendChild(slots);
@@ -923,7 +928,7 @@
     });
     body.appendChild(chips);
 
-    armCta('확인', false, function () {
+    armCta(t('cta.check'), false, function () {
       var ok = placed.every(function (p, i) { return p.order === i; });
       Array.prototype.forEach.call(slots.children, function (sl, i) {
         sl.classList.remove('is-filled');
@@ -955,9 +960,6 @@
   }
 
   // ---- 채점 ----
-  // 칭찬은 여러 가지, 정정은 한 가지 — 실수에 감정을 싣지 않습니다.
-  var PRAISE = ['훌륭해요!', '좋아요!', '정확해요!', '잘했어요!', '바로 그거예요!', '완벽해요!', '멋져요!', '깔끔해요!', '맞았어요!', '척척이네요!'];
-
   function grade(ok, explain, answer) {
     if (sess.graded) return;
     sess.graded = true;
@@ -988,7 +990,8 @@
       stk.style.cssText = 'width:56px;height:56px;border-radius:18px;border-width:4px';
       stk.innerHTML = leon('correct');
       head.appendChild(stk);
-      head.appendChild(el('span', 'fb-title', PRAISE[Math.floor(Math.random() * PRAISE.length)]));
+      var praise = UI['praise'];
+      head.appendChild(el('span', 'fb-title', praise[Math.floor(Math.random() * praise.length)]));
       // 연속으로 더 받은 게 눈에 보여야 연속이 의미가 생겨요
       if (got) head.appendChild(el('span', 'fb-gain', '+' + money(got * USD_PER_XP)));
       fb.appendChild(head);
@@ -1005,11 +1008,11 @@
       stk2.style.cssText = 'width:56px;height:56px;border-radius:18px;border-width:4px';
       stk2.innerHTML = leon('incorrect');
       head.appendChild(stk2);
-      head.appendChild(el('span', 'fb-title', '아쉬워요!'));
+      head.appendChild(el('span', 'fb-title', t('fb.wrong')));
       fb.appendChild(head);
       if (answer) {
         var box = el('div');
-        box.appendChild(el('div', 'fb-answer-label', '정답'));
+        box.appendChild(el('div', 'fb-answer-label', t('fb.answerLabel')));
         box.appendChild(el('div', 'fb-answer', answer));
         fb.appendChild(box);
       }
@@ -1022,7 +1025,7 @@
 
     foot.insertBefore(fb, foot.firstChild);
     renderBar();
-    armCta('계속하기', true, advance);
+    armCta(t('cta.continue'), true, advance);
   }
 
   function advance() {
@@ -1056,7 +1059,7 @@
 
     var next = $('done-next');
     var fresh = next.cloneNode(false);
-    fresh.textContent = '계속하기';
+    fresh.textContent = t('cta.continue');
     fresh.addEventListener('click', function () { sfx.tap(); r.next(); });
     next.parentNode.replaceChild(fresh, next);
 
@@ -1085,14 +1088,14 @@
     showResult({
       // 체크포인트는 졸업, 유닛은 그 유닛에서 얻은 한 줄
       label: cp
-        ? '레벨 ' + pad(lv.n) + ' 졸업'
-        : '레벨 ' + pad(lv.n) + ' · 유닛 ' + pad(unitNoOf(sess.lesson)) + ' 완료',
+        ? t('done.cpLabel', { n: pad(lv.n) })
+        : t('done.unitLabel', { n: pad(lv.n), u: pad(unitNoOf(sess.lesson)) }),
       labelColor: color,
       title: cp
-        ? '오늘부터 <b style="color:' + color + '">' + lv.name + '</b>예요'
-        : (sess.lesson.got || '유닛 완료!'),
-      xpHead: '받은 돈', xp: money(sess.xp * USD_PER_XP),
-      accHead: '잘했어요', acc: acc + '%',
+        ? t('done.cpTitle', { color: color, name: lv.name })
+        : (sess.lesson.got || t('done.title')),
+      xpHead: t('done.moneyHead'), xp: money(sess.xp * USD_PER_XP),
+      accHead: t('done.accHead'), acc: acc + '%',
       next: function () { hitNow ? showGoalHit(wasNew) : afterDone(wasNew); }
     });
   }
@@ -1114,9 +1117,9 @@
     save();
     sfx.done();
     showResult({
-      label: '', title: '오늘 목표 달성!',
-      xpHead: '오늘 받은 돈', xp: money(state.dayXP * USD_PER_XP),
-      accHead: '오늘 끝낸 유닛', acc: state.dayU + '유닛',
+      label: '', title: t('goalHit.title'),
+      xpHead: t('goalHit.moneyHead'), xp: money(state.dayXP * USD_PER_XP),
+      accHead: t('goalHit.unitsHead'), acc: t('count.units', { n: state.dayU }),
       next: function () { afterDone(wasNew); }
     });
   }
@@ -1136,13 +1139,13 @@
 
   // ══ 가입 요청 ═══════════════════════════════════════════
   function renderSignup() {
-    $('recap-units').textContent = state.done.filter(Boolean).length + '개';
+    $('recap-units').textContent = t('count.done', { n: state.done.filter(Boolean).length });
     $('recap-xp').textContent = money(state.xp * USD_PER_XP);
     paintLeon($('s-signup'));
   }
   $('signup-yes').addEventListener('click', function () {
     sfx.tap();
-    alert('프로필 만들기는 준비 중이에요. 기록은 이 기기에 저장돼 있어요.');
+    alert(t('signup.alert'));
     renderHome();
     show('s-home');
   });
@@ -1167,6 +1170,12 @@
     try { localStorage.removeItem(SAVE_KEY); } catch (e) {}
     history.replaceState(null, '', location.pathname);
   }
+  // 화면을 그리기 전에 HTML에 박아둔 자리부터 지금 언어로 채웁니다
+  applyStaticText();
+  $('build-note').textContent = t('build.note', { name: CURRICULUM[0].ko, n: CURRICULUM[0].units.length });
+  $('cur-sub').textContent = t('cur.sub', { n: CURRICULUM.length });
+  mountLangSwitch(sfx.tap);
+
   load();
   rollDay();
   paintLeon(document);
