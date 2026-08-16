@@ -627,6 +627,13 @@ button:focus-visible,
 .fb-title { font-family: var(--display); font-size: 24px; }
 .lesson-foot.is-correct .fb-title { color: var(--sprout-ink); }
 .lesson-foot.is-wrong .fb-title { color: var(--ember-deep); }
+/* 이번 문제로 받은 돈 — 칭찬 옆에 붙어 연속 보너스가 오르는 게 보입니다 */
+.fb-gain {
+  margin-left: auto; flex: none;
+  font-family: var(--display); font-size: 20px; color: var(--coin-deep);
+  background: color-mix(in srgb, var(--coin) 18%, transparent);
+  border-radius: 999px; padding: 4px 12px;
+}
 .fb-explain { font-weight: 500; font-size: 17px; line-height: 1.6; color: #1f7a5e; }
 .fb-answer-label { font-weight: 700; font-size: 14px; color: #c94040; }
 .fb-answer { font-family: var(--display); font-size: 24px; color: var(--ember-deep); margin-top: 4px; }

@@ -6,6 +6,9 @@
 
   var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var QUESTION_XP = 10;
+  var COMBO_XP = 5;      // 연속 정답 한 번마다 얹히는 보너스
+  var COMBO_MAX = 7;     // 보너스가 멈추는 지점 — 정답 효과음이 더 안 올라가는 8연속과 같은 자리
+  var USD_PER_XP = 1;    // 유닛을 끝내면 그 레슨에서 모은 XP가 이 비율로 달러가 됩니다
 
   // ── 레온 · 표정은 세 개면 충분합니다 ────────────────────────
   function leon(mood) {
@@ -125,7 +128,7 @@
   var state = {
     reason: null, goal: null,
     done: LESSONS.map(function () { return false; }),
-    xp: 0, askedSignup: false, onboarded: false,
+    xp: 0, cash: 0, askedSignup: false, onboarded: false,
     day: '', dayU: 0, dayXP: 0, dayHit: false
   };
 
@@ -181,6 +184,14 @@
     }
     window.scrollTo(0, 0);
     if (id === 's-home' && typeof syncHeader === 'function') syncHeader();
+    if (id === 's-invest') renderInvest();
+  }
+
+  // 보상은 전부 달러 정수라 소수점은 쓰지 않습니다
+  function money(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+
+  function renderInvest() {
+    $('inv-total').textContent = money(state.cash);
   }
 
   $('tabbar').querySelectorAll('.tab').forEach(function (t) {
@@ -801,6 +812,8 @@
           var isLeft = side === 'l';
           var prev = isLeft ? selL : selR;
           if (prev) prev.classList.remove('is-sel');
+          // 같은 칸을 다시 누르면 선택을 무릅니다 — 양쪽 다 똑같이
+          if (prev === b) { if (isLeft) selL = null; else selR = null; return; }
           b.classList.add('is-sel');
           if (isLeft) selL = b; else selR = b;
           if (selL && selR) resolve();
@@ -954,15 +967,18 @@
     var fb = el('div', 'fb');
     var head = el('div', 'fb-head');
 
+    var got = 0;
     if (ok) {
       sfx.correct(sess.combo);   // 소리는 지금까지 쌓인 연속 정답만큼 올라갑니다
-      sess.combo++;
       if (entry.kind !== 'retry') {
+        // 보너스는 소리와 같은 값을 타고 올라요 — 둘 다 8연속에서 멈춥니다
+        got = QUESTION_XP + COMBO_XP * Math.min(sess.combo, COMBO_MAX);
         sess.firstTryRight++;
-        sess.xp += QUESTION_XP;   // XP는 첫 시도에만
+        sess.xp += got;   // XP는 첫 시도에만
         rollDay();
-        state.dayXP += QUESTION_XP;
+        state.dayXP += got;
       }
+      sess.combo++;
       foot.classList.add('is-correct');
       // 맞힌 순간 바로 차오릅니다 — '계속하기'까지 기다리지 않아요
       sess.passed[entry.kind]++;
@@ -973,6 +989,8 @@
       stk.innerHTML = leon('correct');
       head.appendChild(stk);
       head.appendChild(el('span', 'fb-title', PRAISE[Math.floor(Math.random() * PRAISE.length)]));
+      // 연속으로 더 받은 게 눈에 보여야 연속이 의미가 생겨요
+      if (got) head.appendChild(el('span', 'fb-gain', '+' + money(got * USD_PER_XP)));
       fb.appendChild(head);
       if (explain) fb.appendChild(el('p', 'fb-explain', explain));
     } else {
@@ -1051,6 +1069,7 @@
     var wasNew = !state.done[sess.idx];
     state.done[sess.idx] = true;
     state.xp += sess.xp;
+    state.cash += sess.xp * USD_PER_XP;   // 유닛을 끝내는 순간 환전됩니다
     rollDay();
     state.dayU++;
     save();
@@ -1072,7 +1091,7 @@
       title: cp
         ? '오늘부터 <b style="color:' + color + '">' + lv.name + '</b>예요'
         : (sess.lesson.got || '유닛 완료!'),
-      xpHead: '획득 XP', xp: sess.xp,
+      xpHead: '받은 돈', xp: money(sess.xp * USD_PER_XP),
       accHead: '잘했어요', acc: acc + '%',
       next: function () { hitNow ? showGoalHit(wasNew) : afterDone(wasNew); }
     });
@@ -1096,7 +1115,7 @@
     sfx.done();
     showResult({
       label: '', title: '오늘 목표 달성!',
-      xpHead: '오늘 모은 XP', xp: state.dayXP,
+      xpHead: '오늘 받은 돈', xp: money(state.dayXP * USD_PER_XP),
       accHead: '오늘 끝낸 유닛', acc: state.dayU + '유닛',
       next: function () { afterDone(wasNew); }
     });
@@ -1118,7 +1137,7 @@
   // ══ 가입 요청 ═══════════════════════════════════════════
   function renderSignup() {
     $('recap-units').textContent = state.done.filter(Boolean).length + '개';
-    $('recap-xp').textContent = state.xp;
+    $('recap-xp').textContent = money(state.xp * USD_PER_XP);
     paintLeon($('s-signup'));
   }
   $('signup-yes').addEventListener('click', function () {
