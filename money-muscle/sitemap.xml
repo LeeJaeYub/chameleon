@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 커스텀 도메인을 연결하면 이 파일 안의 chameleoon.pages.dev만 새 도메인으로 바꾸면 됩니다.
-     언어판이 늘어날 때마다(ja/zh/es/pt/vi) <url> 블록과 xhtml:link를 함께 추가하세요 —
+     언어판이 늘어날 때마다(zh/es/pt/vi) <url> 블록과 xhtml:link를 함께 추가하세요 —
      한쪽만 추가하고 다른 언어의 alternate를 안 채우면 hreflang 오류로 잡힙니다. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
@@ -8,6 +8,7 @@
     <loc>https://chameleoon.pages.dev/</loc>
     <xhtml:link rel="alternate" hreflang="ko" href="https://chameleoon.pages.dev/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://chameleoon.pages.dev/en/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://chameleoon.pages.dev/ja/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chameleoon.pages.dev/"/>
     <changefreq>weekly</changefreq>
   </url>
@@ -15,6 +16,15 @@
     <loc>https://chameleoon.pages.dev/en/</loc>
     <xhtml:link rel="alternate" hreflang="ko" href="https://chameleoon.pages.dev/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://chameleoon.pages.dev/en/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://chameleoon.pages.dev/ja/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chameleoon.pages.dev/"/>
+    <changefreq>weekly</changefreq>
+  </url>
+  <url>
+    <loc>https://chameleoon.pages.dev/ja/</loc>
+    <xhtml:link rel="alternate" hreflang="ko" href="https://chameleoon.pages.dev/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chameleoon.pages.dev/en/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://chameleoon.pages.dev/ja/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chameleoon.pages.dev/"/>
     <changefreq>weekly</changefreq>
   </url>

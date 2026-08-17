@@ -13,7 +13,7 @@
 const LOCALES = {
   ko: { dir: '',    ready: true  },
   en: { dir: 'en/', ready: true  },
-  ja: { dir: 'ja/', ready: false },
+  ja: { dir: 'ja/', ready: true  },
   zh: { dir: 'zh/', ready: false },
   es: { dir: 'es/', ready: false },
   pt: { dir: 'pt/', ready: false },

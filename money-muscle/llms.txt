@@ -8,6 +8,7 @@ CHAMELEONZ is a static single-page web app. Lessons run as short interactive uni
 
 - [Korean (default)](https://chameleoon.pages.dev/) — 한국어, the original edition
 - [English](https://chameleoon.pages.dev/en/) — localized, not machine-translated
+- [Japanese](https://chameleoon.pages.dev/ja/) — 日本語, localized, not machine-translated
 
 Visiting the root URL auto-routes to the visitor's language by country; a language switcher (bottom-right) lets anyone pick manually.
 
