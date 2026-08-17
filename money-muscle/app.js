@@ -11,28 +11,11 @@
   var USD_PER_XP = 1;    // 유닛을 끝내면 그 레슨에서 모은 XP가 이 비율로 달러가 됩니다
 
   // ── 레온 · 표정은 세 개면 충분합니다 ────────────────────────
+  // correct(유닛 완료 축하)만 leon-happy.webp, idle·incorrect는 leon-idle.webp —
+  // 오답은 기존처럼 처지는 표정을 따로 두지 않고 기본 아이들 모션으로 갑니다.
   function leon(mood) {
-    var face =
-      mood === 'correct'
-        ? '<path d="M14 21q4-5 8 0" fill="none" stroke="#0f2a20" stroke-width="2.6" stroke-linecap="round"/>' +
-          '<path d="M22 34q7 6 14 0" fill="none" stroke="#0f2a20" stroke-width="2.4" stroke-linecap="round"/>'
-        : mood === 'incorrect'
-        ? '<circle cx="18" cy="22" r="3.4" fill="#0f2a20"/>' +
-          '<path d="M23 37q6-4 12 0" fill="none" stroke="#0f2a20" stroke-width="2.4" stroke-linecap="round"/>'
-        : '<circle cx="18" cy="21" r="3.6" fill="#0f2a20"/>' +
-          '<path d="M23 34q6 4 12 0" fill="none" stroke="#0f2a20" stroke-width="2.4" stroke-linecap="round"/>';
-
-    return (
-      '<svg viewBox="0 0 76 64" fill="none" aria-hidden="true">' +
-      '<path d="M52 40q16-4 13-18-3-11-15-7" fill="none" stroke="#00795a" stroke-width="8" stroke-linecap="round"/>' +
-      '<path d="M20 14q4-8 10-6" fill="none" stroke="#00795a" stroke-width="4" stroke-linecap="round"/>' +
-      '<ellipse cx="36" cy="40" rx="23" ry="16" fill="#00b37e" stroke="#00795a" stroke-width="2.5"/>' +
-      '<ellipse cx="22" cy="24" rx="16" ry="12" fill="#00b37e" stroke="#00795a" stroke-width="2.5"/>' +
-      '<ellipse cx="26" cy="54" rx="5" ry="3.4" fill="#00795a"/>' +
-      '<ellipse cx="46" cy="55" rx="5" ry="3.4" fill="#00795a"/>' +
-      face +
-      '</svg>'
-    );
+    var src = mood === 'correct' ? '/leon-happy.webp' : '/leon-idle.webp';
+    return '<img src="' + src + '" alt="" style="width:100%;height:100%;object-fit:contain">';
   }
 
   function paintLeon(root) {
@@ -751,7 +734,7 @@
       var row = el('div', 'sticker-row');
       row.appendChild(el('span', 'sticker is-idle', ''));
       var stk = row.firstChild;
-      stk.style.cssText = 'width:82px;height:82px;border-radius:22px';
+      stk.style.cssText = 'width:110px;height:110px;border-radius:22px';
       stk.innerHTML = leon('idle');
       row.appendChild(el('p', 'bubble', s.aside));
       body.appendChild(row);
@@ -1004,7 +987,7 @@
       entry.counted = true;
 
       var stk = el('span', 'sticker is-correct');
-      stk.style.cssText = 'width:56px;height:56px;border-radius:18px;border-width:4px';
+      stk.style.cssText = 'width:92px;height:92px;border-radius:18px;border-width:4px';
       stk.innerHTML = leon('correct');
       head.appendChild(stk);
       var praise = UI['praise'];
@@ -1022,7 +1005,7 @@
       foot.classList.add('is-wrong');
 
       var stk2 = el('span', 'sticker is-incorrect');
-      stk2.style.cssText = 'width:56px;height:56px;border-radius:18px;border-width:4px';
+      stk2.style.cssText = 'width:92px;height:92px;border-radius:18px;border-width:4px';
       stk2.innerHTML = leon('incorrect');
       head.appendChild(stk2);
       head.appendChild(el('span', 'fb-title', t('fb.wrong')));
