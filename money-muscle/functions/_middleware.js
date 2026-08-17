@@ -14,7 +14,7 @@ const LOCALES = {
   ko: { dir: '',    ready: true  },
   en: { dir: 'en/', ready: true  },
   ja: { dir: 'ja/', ready: true  },
-  zh: { dir: 'zh/', ready: false },
+  zh: { dir: 'zh/', ready: true  },
   es: { dir: 'es/', ready: false },
   pt: { dir: 'pt/', ready: false },
   vi: { dir: 'vi/', ready: false }

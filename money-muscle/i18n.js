@@ -13,7 +13,7 @@ var LOCALES = [
   { code: 'ko', dir: '',    tag: 'KO', label: '한국어',     ready: true  },
   { code: 'en', dir: 'en/', tag: 'EN', label: 'English',    ready: true  },
   { code: 'ja', dir: 'ja/', tag: 'JA', label: '日本語',      ready: true  },
-  { code: 'zh', dir: 'zh/', tag: 'ZH', label: '简体中文',    ready: false },
+  { code: 'zh', dir: 'zh/', tag: 'ZH', label: '简体中文',    ready: true  },
   { code: 'es', dir: 'es/', tag: 'ES', label: 'Español',    ready: false },
   { code: 'pt', dir: 'pt/', tag: 'PT', label: 'Português',  ready: false },
   { code: 'vi', dir: 'vi/', tag: 'VI', label: 'Tiếng Việt', ready: false }
