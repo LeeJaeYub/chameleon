@@ -1,6 +1,13 @@
 // 앱에 실린 LESSONS 전수 검사. 레벨이 늘어날 때마다 이걸 먼저 돌립니다.
+// 언어판을 검사하려면 인자로 폴더명을 줍니다 (예: node tools/audit-lessons.js en).
 var fs = require('fs');
-eval(fs.readFileSync(__dirname + '/../money-muscle/content.js', 'utf8'));
+var dir = process.argv[2] ? process.argv[2] + '/' : '';
+eval(fs.readFileSync(__dirname + '/../money-muscle/' + dir + 'content.js', 'utf8'));
+
+// 한글 음절 하나가 라틴 글자 하나보다 화면에서 훨씬 넓어서, 같은 자리에 들어가는
+// 글자 수 한도가 언어마다 달라요. 한국어 18자 기준을 그대로 라틴 알파벳에 쓰면
+// 실제로는 자리가 남는데도 경고가 뜹니다.
+var LABEL_MAX = dir ? 32 : 18;
 
 var err = [], warn = [];
 function N(s) { return String(s).replace(/\s+/g, ' ').trim(); }
@@ -30,7 +37,7 @@ LESSONS.forEach(function (L, li) {
         var c = s.compare;
         if (!c.note || !c.a || !c.b || !c.a.label || !c.a.value || !c.b.label || !c.b.value)
           err.push(sid + ' compare 필드 누락');
-        if (c.a.label.length > 18 || c.b.label.length > 18)
+        if (c.a.label.length > LABEL_MAX || c.b.label.length > LABEL_MAX)
           warn.push(sid + ' compare 라벨 김(' + Math.max(c.a.label.length, c.b.label.length) + '자)');
       }
       return;

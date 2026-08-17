@@ -49,7 +49,7 @@ function loadLocale(dir) {
   var cPath = path.join(ROOT, dir, 'content.js');
   if (!fs.existsSync(uiPath)) return { missing: 'ui.js' };
   if (!fs.existsSync(cPath)) return { missing: 'content.js' };
-  var fn = new Function(read(uiPath) + '\n' + read(cPath) + '\n; return { UI: UI, LOCALE: LOCALE, LESSONS: LESSONS, CURRICULUM: CURRICULUM };');
+  var fn = new Function(read(uiPath) + '\n' + read(cPath) + '\n; return { UI: UI, LOCALE: LOCALE, LESSONS: LESSONS, CURRICULUM: CURRICULUM, REASONS: REASONS, GOALS: GOALS };');
   try { box = fn(); } catch (e) { return { broken: e.message }; }
   return box;
 }
@@ -86,11 +86,17 @@ if (ko.missing || ko.broken) {
       if (ko.UI[k] === undefined) warn.push(l.code + ': 한국어에 없는 키 — ' + k);
     });
 
-    // 문구 안의 {자리}가 그대로 옮겨졌는지 — 하나라도 빠지면 화면에 숫자가 안 나옵니다
+    // 문구 안의 {자리}가 그대로 옮겨졌는지 — 하나라도 빠지면 화면에 숫자가 안 나옵니다.
+    // 단수·복수(|) 문구는 폼마다 같은 {n}이 반복되니, 등장 횟수가 아니라 종류만 비교합니다.
+    function placeholders(s) {
+      var set = {};
+      (s.match(/\{\w+\}/g) || []).forEach(function (p) { set[p] = 1; });
+      return Object.keys(set).sort().join(',');
+    }
     koKeys.forEach(function (k) {
       if (typeof ko.UI[k] !== 'string' || typeof box.UI[k] !== 'string') return;
-      var want = (ko.UI[k].match(/\{\w+\}/g) || []).sort().join(',');
-      var got = (box.UI[k].match(/\{\w+\}/g) || []).sort().join(',');
+      var want = placeholders(ko.UI[k]);
+      var got = placeholders(box.UI[k]);
       if (want !== got) err.push(l.code + ': 자리표시 다름 — ' + k + ' (ko: ' + (want || '없음') + ' / ' + l.code + ': ' + (got || '없음') + ')');
     });
 
@@ -113,6 +119,19 @@ if (ko.missing || ko.broken) {
       var b = k.steps.map(function (s) { return s.type; }).join(',');
       if (a !== b) err.push(l.code + ': 레슨 ' + i + ' 문항 구성 다름 — ko(' + b + ') vs ' + l.code + '(' + a + ')');
     });
+
+    // REASONS·GOALS가 없으면 app.js가 온보딩 화면에서 그대로 멈춰요
+    if (!Array.isArray(box.REASONS)) err.push(l.code + ': REASONS 없음');
+    if (!Array.isArray(box.GOALS)) err.push(l.code + ': GOALS 없음');
+    if (Array.isArray(box.GOALS)) {
+      if (box.GOALS.length !== ko.GOALS.length) err.push(l.code + ': GOALS 개수 다름 — ko ' + ko.GOALS.length + ' vs ' + box.GOALS.length);
+      box.GOALS.forEach(function (g, i) {
+        var kg = ko.GOALS[i];
+        if (!kg) return;
+        if (g.key !== kg.key || g.min !== kg.min || g.units !== kg.units)
+          err.push(l.code + ': GOALS[' + i + '] key·min·units가 한국어와 달라야 할 이유가 없어요 (label·detail만 옮기세요)');
+      });
+    }
   });
 }
 

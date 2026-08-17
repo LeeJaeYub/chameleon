@@ -11,7 +11,7 @@
    functions/_middleware.js 에 같은 목록이 한 벌 더 있어요 — 둘이 어긋나면 검사 도구가 잡습니다. */
 var LOCALES = [
   { code: 'ko', dir: '',    tag: 'KO', label: '한국어',     ready: true  },
-  { code: 'en', dir: 'en/', tag: 'EN', label: 'English',    ready: false },
+  { code: 'en', dir: 'en/', tag: 'EN', label: 'English',    ready: true  },
   { code: 'ja', dir: 'ja/', tag: 'JA', label: '日本語',      ready: false },
   { code: 'zh', dir: 'zh/', tag: 'ZH', label: '简体中文',    ready: false },
   { code: 'es', dir: 'es/', tag: 'ES', label: 'Español',    ready: false },
