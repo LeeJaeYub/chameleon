@@ -113,6 +113,16 @@ export async function onRequest(context) {
   const { request, next } = context;
   const url = new URL(request.url);
 
+  // 게이트를 달기 전에 다녀간 기기는 그때 받은 페이지를 브라우저가 캐시해뒀다가
+  // 재방문 시 서버에 요청조차 안 보낼 수 있습니다 — 그러면 게이트가 실행될 기회가
+  // 없어요. next()를 그냥 돌려주지 않고 캐시 금지 헤더를 얹어 항상 새로 확인하게 합니다.
+  async function pass() {
+    const res = await next();
+    const headers = new Headers(res.headers);
+    headers.set('Cache-Control', 'no-store');
+    return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
+  }
+
   // ── 입장 코드 게이트 — 언어 라우팅보다 먼저 막습니다 ──────────
   if (!hasGateCookie(request)) {
     const given = url.searchParams.get('code');
@@ -137,11 +147,11 @@ export async function onRequest(context) {
   const atRoot = url.pathname === '/' || url.pathname === '/index.html';
   const readOnly = request.method === 'GET' || request.method === 'HEAD';
   // ?lang=ko 처럼 언어를 콕 집어 부르면 그대로 보여줍니다 (링크로 공유할 때 필요해요)
-  if (!atRoot || !readOnly || url.searchParams.has('lang')) return next();
+  if (!atRoot || !readOnly || url.searchParams.has('lang')) return pass();
 
   const code = resolve(request);
   const dir = LOCALES[code].dir;
-  if (!dir) return next();   // 한국어는 여기가 제자리입니다
+  if (!dir) return pass();   // 한국어는 여기가 제자리입니다
 
   const to = new URL('/' + dir, url);
   to.search = url.search;
