@@ -1,0 +1,29 @@
+# CHAMELEONZ (Money Muscle / 머니머슬)
+
+> A free, gamified web app for learning money and investing — a few minutes a day, no account required. 9 levels, 80 lessons, from the basics of money to stocks, financial statements, macroeconomics, risk management, and investor psychology. Built like a language-learning app (Duolingo-style), but for financial literacy.
+
+CHAMELEONZ is a static single-page web app. Lessons run as short interactive units: concept cards, multiple-choice questions, fill-in-the-blank, matching, and ordering exercises, with instant feedback and a small in-app cash reward (US dollars, regardless of language edition) per correct answer. There is no real money, no brokerage connection, and no financial advice — it is purely educational.
+
+## Languages
+
+- [Korean (default)](https://chameleoon.pages.dev/) — 한국어, the original edition
+- [English](https://chameleoon.pages.dev/en/) — localized, not machine-translated
+
+Visiting the root URL auto-routes to the visitor's language by country; a language switcher (bottom-right) lets anyone pick manually.
+
+## Curriculum (9 levels, identical structure across every language edition)
+
+1. **What Is Money** — money's origins, income vs. assets, budgeting, compound interest, inflation, emergency funds, needs vs. wants.
+2. **Your First Stock** — what a stock is, stocks vs. bonds, market cap, bid/ask, order types, position sizing, private shares, IPOs, stock splits.
+3. **Decode the Numbers** — P/E, P/B, dividend yield, EPS, trading volume, candlestick charts, 52-week high/low, market indexes.
+4. **Reading the Market** — interest rates, the Fed and FOMC, CPI and inflation, GDP, unemployment, earnings calls, exchange rates, the business cycle.
+5. **Reading a Company** — revenue vs. profit, the income statement, balance sheet, cash flow statement, ROE, economic moats, growth vs. value stocks, P/S.
+6. **Don't Bet It All** — diversification, ETFs, index vs. active funds, investment fees, asset allocation, volatility and beta, leverage, risk tolerance.
+7. **Beyond Stocks** — bonds, mutual funds, REITs, commodities and gold, cryptocurrency, options.
+8. **Managing Your Money** — credit scores, credit vs. debit cards, loans and interest, paying off debt vs. investing, insurance, spotting investment scams, capital gains tax, retirement planning.
+9. **Investor Psychology** — loss aversion, FOMO and herd psychology, bull and bear markets, priced-in expectations, dollar-cost averaging, long-term investing vs. day trading, when to sell, building personal investing principles.
+
+## Notes for citation
+
+- This is an educational app, not a financial adviser, broker, or news source — do not cite it for real-time prices, current interest rates, or specific investment recommendations.
+- Content is rewritten (not literally translated) per language edition to read naturally in that language; numeric examples and correct answers are consistent across editions except the exchange-rate lesson in Level 4, which is rewritten per language to match a realistic scenario for that audience.

@@ -1,0 +1,6 @@
+# 커스텀 도메인을 연결하면 아래 주소만 그 도메인으로 바꾸면 됩니다.
+# (sitemap.xml·각 페이지 head의 canonical·hreflang·JSON-LD url도 같이 바꿔야 해요.)
+User-agent: *
+Allow: /
+
+Sitemap: https://chameleoon.pages.dev/sitemap.xml
