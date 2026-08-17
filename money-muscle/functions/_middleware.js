@@ -23,17 +23,13 @@ const LOCALES = {
 const FALLBACK = 'en';
 const COOKIE = 'mm_lang';
 
-/* 나라 → 언어. 여기 없는 나라는 전부 영어로 갑니다. */
+/* 나라 → 언어. 여기 없는 나라는 전부 영어로 갑니다.
+   es/pt/vi판이 나오기 전까지는 임의로 이 목록에서 뺐습니다 — 각 언어가 준비되면 그때 다시 넣어주세요. */
 const BY_COUNTRY = {
   KR: 'ko',
   JP: 'ja',
   // 대만·홍콩·마카오는 번체를 쓰지만, 번체판이 생기기 전까지는 영어보다 간체가 읽기 낫습니다
-  CN: 'zh', TW: 'zh', HK: 'zh', MO: 'zh', SG: 'zh',
-  VN: 'vi',
-  BR: 'pt', PT: 'pt', AO: 'pt', MZ: 'pt', CV: 'pt', GW: 'pt', ST: 'pt', TL: 'pt',
-  ES: 'es', MX: 'es', AR: 'es', CO: 'es', CL: 'es', PE: 'es', VE: 'es', EC: 'es',
-  GT: 'es', CU: 'es', BO: 'es', DO: 'es', HN: 'es', PY: 'es', SV: 'es', NI: 'es',
-  CR: 'es', PA: 'es', UY: 'es', PR: 'es', GQ: 'es'
+  CN: 'zh', TW: 'zh', HK: 'zh', MO: 'zh', SG: 'zh'
 };
 
 function usable(code) {

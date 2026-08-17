@@ -46,6 +46,23 @@
   // 배음을 겹쳐 나무·벨 소리에 가깝게 만들고, 연속 정답이면 음을 한 칸씩 올립니다.
   var ctx = null;
 
+  // 모바일에서 AudioContext는 (1) 탭이 백그라운드로 갔다 오거나
+  // (2) 첫 소리가 나기 전 '사용자 제스처' 없이 만들어지면 suspended로 멈춥니다.
+  // resume()은 비동기라 note() 안에서 호출해도 그 첫 소리는 씹힙니다 —
+  // 그래서 터치/클릭·탭 복귀 시점에 미리 깨워둡니다.
+  function unlockAudio() {
+    try {
+      if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if (ctx.state === 'suspended') ctx.resume();
+    } catch (e) {}
+  }
+  ['touchstart', 'mousedown', 'keydown'].forEach(function (ev) {
+    document.addEventListener(ev, unlockAudio, { passive: true });
+  });
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'visible') unlockAudio();
+  });
+
   var BELL = [[1, 1], [2, 0.42], [3.01, 0.17], [4.7, 0.07]];   /* 실로폰·벨 */
   var WOOD = [[1, 1], [2, 0.22], [3, 0.06]];                   /* 나무 두드리는 소리 */
 

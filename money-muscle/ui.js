@@ -101,7 +101,7 @@ var UI = {
 
   /* 하단 탭 */
   'tab.learn': '학습',
-  'tab.invest': '투자',
+  'tab.invest': '모의투자',
   'lang.pick': '언어 선택',
   'lang.title': '언어'
 };

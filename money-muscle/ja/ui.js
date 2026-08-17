@@ -101,7 +101,7 @@ var UI = {
 
   /* 下部タブ */
   'tab.learn': '学習',
-  'tab.invest': '投資',
+  'tab.invest': '模擬投資',
   'lang.pick': '言語を選択',
   'lang.title': '言語'
 };

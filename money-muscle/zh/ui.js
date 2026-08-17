@@ -101,7 +101,7 @@ var UI = {
 
   /* 底部标签栏 */
   'tab.learn': '学习',
-  'tab.invest': '投资',
+  'tab.invest': '模拟投资',
   'lang.pick': '选择语言',
   'lang.title': '语言'
 };

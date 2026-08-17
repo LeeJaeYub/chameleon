@@ -101,7 +101,7 @@ var UI = {
 
   /* bottom tabs */
   'tab.learn': 'Learn',
-  'tab.invest': 'Invest',
+  'tab.invest': 'Simulator',
   'lang.pick': 'Choose language',
   'lang.title': 'Language'
 };
