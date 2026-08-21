@@ -23,44 +23,6 @@ const LOCALES = {
 const FALLBACK = 'en';
 const COOKIE = 'mm_lang';
 
-/* ── 비공개 테스트용 입장 코드 ────────────────────────────────
-   여기 코드만 바꾸면 됩니다. 앱 파일은 하나도 안 건드립니다.
-   URL 끝에 ?code=여기코드 를 붙여 들어오면 30일짜리 쿠키를 받고
-   통과합니다 — 링크 하나로 공유하고 싶으면 https://chameleoon.pages.dev/?code=여기코드 처럼 보내면 돼요. */
-const GATE_CODE = 'chameleonz_money';
-const GATE_COOKIE = 'mm_gate';
-
-function hasGateCookie(request) {
-  const raw = request.headers.get('cookie');
-  return !!raw && new RegExp('(?:^|;\\s*)' + GATE_COOKIE + '=1(?:;|$)').test(raw);
-}
-
-function gatePage(wrong) {
-  return `<!doctype html><html lang="ko"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CHAMELEONZ</title>
-<style>
-  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
-    background:#161221;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#fff}
-  form{width:min(320px,86vw);text-align:center}
-  h1{font-size:20px;margin:0 0 22px}
-  input{width:100%;box-sizing:border-box;padding:14px 16px;border-radius:14px;border:2px solid #3a3350;
-    background:#221d33;color:#fff;font-size:16px;text-align:center;outline:none}
-  input:focus{border-color:#8b5cf6}
-  button{width:100%;margin-top:12px;padding:14px;border:none;border-radius:14px;background:#8b5cf6;
-    color:#fff;font-size:16px;font-weight:700;cursor:pointer}
-  p.err{color:#ff8080;font-size:14px;margin-top:14px}
-</style></head>
-<body>
-  <form method="GET">
-    <h1>비공개 테스트 중입니다<br>입장 코드를 입력해주세요</h1>
-    <input name="code" placeholder="코드" autofocus autocomplete="off">
-    <button type="submit">입장</button>
-    ${wrong ? '<p class="err">코드가 틀렸습니다</p>' : ''}
-  </form>
-</body></html>`;
-}
-
 /* 나라 → 언어. 여기 없는 나라는 전부 영어로 갑니다.
    es/pt/vi판이 나오기 전까지는 임의로 이 목록에서 뺐습니다 — 각 언어가 준비되면 그때 다시 넣어주세요. */
 const BY_COUNTRY = {
@@ -113,45 +75,15 @@ export async function onRequest(context) {
   const { request, next } = context;
   const url = new URL(request.url);
 
-  // 게이트를 달기 전에 다녀간 기기는 그때 받은 페이지를 브라우저가 캐시해뒀다가
-  // 재방문 시 서버에 요청조차 안 보낼 수 있습니다 — 그러면 게이트가 실행될 기회가
-  // 없어요. next()를 그냥 돌려주지 않고 캐시 금지 헤더를 얹어 항상 새로 확인하게 합니다.
-  async function pass() {
-    const res = await next();
-    const headers = new Headers(res.headers);
-    headers.set('Cache-Control', 'no-store');
-    return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
-  }
-
-  // ── 입장 코드 게이트 — 언어 라우팅보다 먼저 막습니다 ──────────
-  if (!hasGateCookie(request)) {
-    const given = url.searchParams.get('code');
-    if (given === GATE_CODE) {
-      const to = new URL(url.pathname, url);   // 코드 노출 안 되게 주소창에서 지웁니다
-      return new Response(null, {
-        status: 302,
-        headers: {
-          Location: to.toString(),
-          'Set-Cookie': `${GATE_COOKIE}=1; path=/; max-age=2592000; samesite=lax`,
-          'Cache-Control': 'no-store'
-        }
-      });
-    }
-    return new Response(gatePage(given !== null), {
-      status: 401,
-      headers: { 'content-type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }
-    });
-  }
-
   // 첫 화면으로 들어올 때만 판단합니다 — 파일 하나하나까지 건드릴 일이 아니에요
   const atRoot = url.pathname === '/' || url.pathname === '/index.html';
   const readOnly = request.method === 'GET' || request.method === 'HEAD';
   // ?lang=ko 처럼 언어를 콕 집어 부르면 그대로 보여줍니다 (링크로 공유할 때 필요해요)
-  if (!atRoot || !readOnly || url.searchParams.has('lang')) return pass();
+  if (!atRoot || !readOnly || url.searchParams.has('lang')) return next();
 
   const code = resolve(request);
   const dir = LOCALES[code].dir;
-  if (!dir) return pass();   // 한국어는 여기가 제자리입니다
+  if (!dir) return next();   // 한국어는 여기가 제자리입니다
 
   const to = new URL('/' + dir, url);
   to.search = url.search;
