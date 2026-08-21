@@ -4,6 +4,13 @@
 (function () {
   'use strict';
 
+  // 홈 화면에 앱으로 설치할 수 있게 하는 최소한의 서비스워커 등록 (오프라인 캐싱은 안 함)
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js').catch(function () {});
+    });
+  }
+
   var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var QUESTION_XP = 10;
   var COMBO_XP = 5;      // 연속 정답 한 번마다 얹히는 보너스
